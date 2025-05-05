@@ -1,0 +1,26 @@
+<div class="flex justify-center h-screen">
+  <!-- background image -->
+  @if (bg) {
+    <div class="w-2/3 h-screen hidden lg:block filter brightness-75">
+      <img src="/backgrounds/notebook.jpg" alt="Sign In backgroun image" class="object-cover w-full h-full">
+    </div>
+  }
+
+  <!-- sign in form -->
+  <div class="flex items-center w-full max-w-md px-6 mx-auto lg:w-2/6">
+    <div class="flex-1">
+      <div class="text-center">
+        <ng-content select="[header]"></ng-content>
+      </div>
+
+      <div class="mt-8">
+        <ng-content></ng-content>
+
+        <!-- sign up link -->
+        <p class="mt-6 text-sm text-center text-gray-400">
+          <ng-content select="[footer]"></ng-content>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

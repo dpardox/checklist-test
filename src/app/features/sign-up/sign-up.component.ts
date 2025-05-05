@@ -3,11 +3,11 @@ import { RouterModule } from '@angular/router';
 import { AuthLayout } from '@shared/layouts/auth/auth.layout';
 
 @Component({
-  selector: 'app-sign-in',
+  selector: 'app-sign-up',
   imports: [RouterModule, AuthLayout],
-  templateUrl: './sign-in.component.html',
-  styleUrl: './sign-in.component.css'
+  templateUrl: './sign-up.component.html',
+  styleUrl: './sign-up.component.css'
 })
-export class SignInComponent {
+export class SignUpComponent {
 
 }
