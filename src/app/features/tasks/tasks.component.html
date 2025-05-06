@@ -1,17 +1,32 @@
 <div class="mx-auto max-w-5xl w-full px-4">
-  <header class="flex items-center justify-between py-4">
-    <div>
-      <h2 class="text-gray-600 font-semibold text-2xl mb-1">Checklist Test</h2>
-      <span class="text-xs">By dpardox</span>
+  <header class="flex items-center justify-between py-10">
+    <div class="flex flex-col items-end">
+      <h2 class="text-gray-600 font-semibold text-2xl mb-1 leading-none">Checklist Test</h2>
+      <span class="text-xs leading-none">By dpardox</span>
     </div>
-    <a class="text-blue-500 cursor-pointer" (click)="signOut()">Sign out</a>
+    <div class="flex flex-col items-end">
+      <div class="text-gray-500">{{ (user$ | async)?.email }}</div>
+      <a class="text-blue-500 cursor-pointer" (click)="signOut()">Sign out</a>
+    </div>
   </header>
 
-  <div class="flex items-start justify-between mb-4 gap-3">
-    <input class="py-2 px-3 rounded-md bg-gray-50 placeholder-gray-400 outline-none block flex-1" type="text" placeholder="Title">
-    <textarea rows="3" class="py-2 px-3 rounded-md bg-gray-50 placeholder-gray-400 outline-none block flex-2" type="text" placeholder="Description"></textarea>
-    <button class="bg-indigo-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer">New</button>
-  </div>
+  <form [formGroup]="taskForm" (ngSubmit)="submitTask()">
+    <div class="flex items-start justify-between mb-4 gap-3">
+      <input type="text"
+        class="py-2 px-3 rounded-md bg-gray-50 placeholder-gray-400 outline-none block flex-1"
+        placeholder="Title"
+        formControlName="title">
+      <textarea rows="3"
+        class="py-2 px-3 rounded-md bg-gray-50 placeholder-gray-400 outline-none block flex-2"
+        placeholder="Description"
+        formControlName="description">
+      </textarea>
+      <button type="submit"
+        class="bg-indigo-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer">
+        New
+      </button>
+    </div>
+  </form>
 
   <div class="min-w-full shadow rounded-lg overflow-hidden">
     <table class="min-w-full leading-normal">
