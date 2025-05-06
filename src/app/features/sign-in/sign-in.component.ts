@@ -4,6 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthLayout } from '@shared/layouts/auth/auth.layout';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '@core/services/auth.service';
+import { ToastService } from '@core/services/toast.service';
+import { FirebaseError } from '@angular/fire/app';
 
 
 @Component({
@@ -14,6 +16,7 @@ import { AuthService } from '@core/services/auth.service';
 })
 export class SignInComponent {
 
+  private toastService = inject(ToastService);
   private router = inject(Router);
   private authService = inject(AuthService);
   private formBuilder = inject(FormBuilder);
@@ -33,9 +36,23 @@ export class SignInComponent {
 
     const { email } = this.signInForm.value;
 
-    await this.authService.signIn(email!);
+    try {
+      await this.authService.signIn(email!);
 
-    this.router.navigate(['/tasks']);
+      this.router.navigate(['/tasks']);
+    } catch (error) {
+      console.log({ error }); // TODO (dpardo): delete
+      const { code } = error as FirebaseError;
+      const errorMapper: Record<string, string> = {
+        'auth/invalid-credential': 'Email not found',
+        'auth/user-not-found': 'Email not found',
+        'auth/too-many-requests': 'Too many requests',
+      };
+
+      const message = errorMapper[code] || 'Error signing in';
+
+      this.toastService.show(message);
+    }
   }
 
 }

@@ -4,6 +4,8 @@ import { AuthLayout } from '@shared/layouts/auth/auth.layout';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '@core/services/auth.service';
+import { ToastService } from '@core/services/toast.service';
+import { FirebaseError } from '@angular/fire/app';
 
 
 @Component({
@@ -14,6 +16,7 @@ import { AuthService } from '@core/services/auth.service';
 })
 export class SignUpComponent {
 
+  private toastService = inject(ToastService);
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
 
@@ -32,9 +35,21 @@ export class SignUpComponent {
 
     const { email } = this.signUpForm.value;
 
-    await this.authService.signUp(email!);
+    try {
+      await this.authService.signIn(email!);
 
-    this.router.navigate(['/tasks']);
+      this.router.navigate(['/tasks']);
+    } catch (error) {
+      console.log({ error }); // TODO (dpardo): delete
+      const { code } = error as FirebaseError;
+      const errorMapper: Record<string, string> = {
+        'auth/too-many-requests': 'Too many requests',
+      };
+
+      const message = errorMapper[code] || 'Error signing up';
+
+      this.toastService.show(message);
+    }
   }
 
 }
