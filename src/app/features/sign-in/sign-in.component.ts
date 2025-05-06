@@ -19,6 +19,12 @@ export class SignInComponent {
     email: ['', [ Validators.required, Validators.email ]],
   });
 
+
+  public get emailControl() {
+    return this.signInForm.get('email');
+  }
+
+
   public signIn() {
     if (this.signInForm.invalid) return;
 
