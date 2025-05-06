@@ -20,9 +20,9 @@ export class TasksComponent {
 
   private formBuilder = inject(FormBuilder);
 
-  private taskService = inject(TaskService);
-
   private toastService = inject(ToastService);
+
+  private taskService = inject(TaskService);
 
   public taskForm = this.formBuilder.group({
     title: ['', [ Validators.required ]],
@@ -30,6 +30,8 @@ export class TasksComponent {
   });
 
   public user$ = this.authService.user$;
+
+  public tasks$ = this.taskService.getAll();
 
   public async submitTask() {
     if (this.taskForm.invalid) return;

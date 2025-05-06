@@ -28,17 +28,17 @@
     </div>
   </form>
 
+  @for (task of tasks$ | async; track task) {
+    <pre>{{ task | json }}</pre>
+  }
+
   <div class="min-w-full shadow rounded-lg overflow-hidden">
     <table class="min-w-full leading-normal">
       <thead>
         <tr>
           <th
             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-            Title
-          </th>
-          <th
-            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-            Description
+            Task
           </th>
           <th
             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -50,36 +50,37 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="line-through">
-          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-            <div class="flex items-center">
-              <input type="checkbox" class="flex-shrink-0 h-6 w-6" value="true" checked>
-              <div class="ml-4">
-                <p class="text-gray-900 whitespace-no-wrap font-semibold">
-                  Title
-                </p>
+        @for (task of tasks$ | async; track task.id) {
+          <tr [class.line-through]="false">
+            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+              <div class="flex items-center">
+                <input type="checkbox" class="flex-shrink-0 h-6 w-6" value="true" checked>
+                <div class="ml-4">
+                  <p class="text-gray-900 whitespace-no-wrap font-semibold">{{ task.title }}</p>
+                  <p class="text-gray-500 whitespace-no-wrap">{{ task.description }}</p>
+                </div>
               </div>
-            </div>
-          </td>
-          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-            <p class="text-gray-900 whitespace-no-wrap">Description</p>
-          </td>
-          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-            <p class="text-gray-900 whitespace-no-wrap">
-              Jan 21, 2020
-            </p>
-          </td>
-          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-            <div class="flex justify-end gap-3">
-              <button class="bg-indigo-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer">
-                Edit
-              </button>
-              <button class="bg-red-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer">
-                Remove
-              </button>
-            </div>
-          </td>
-        </tr>
+            </td>
+            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+              <p class="text-gray-800 whitespace-no-wrap">
+                {{ task.createdAt.toDate() | date:'mediumDate' }}
+              </p>
+              <p class="text-gray-500 whitespace-no-wrap">
+                {{ task.createdAt.toDate() | date:'shortTime' }}
+              </p>
+            </td>
+            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+              <div class="flex justify-end gap-3">
+                <button class="bg-indigo-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer">
+                  Edit
+                </button>
+                <button class="bg-red-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer">
+                  Remove
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
     <div class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
