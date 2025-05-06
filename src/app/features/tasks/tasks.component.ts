@@ -60,6 +60,15 @@ export class TasksComponent {
     this.taskForm.patchValue({ id, title, description });
   }
 
+  public async deleteTask(id: string) {
+    try {
+      await this.taskService.delete(id);
+      this.toastService.show('Task deleted successfully!');
+    } catch (_) {
+      this.toastService.show('Error deleting task');
+    }
+  }
+
   public async signOut() {
     await this.authService.signOut();
     this.router.navigate(['/sign-in']);

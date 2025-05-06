@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, doc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 import { filter, firstValueFrom, Observable, switchMap } from 'rxjs';
 import { Task } from '@shared/interfaces/task.interface';
@@ -40,6 +40,15 @@ export class TaskService {
 
     const taskRef = doc(this.firestore, `users/${user.uid}/tasks/${id}`);
     return updateDoc(taskRef, task);
+  }
+
+  public async delete(id: string) {
+    const user = await firstValueFrom(this.authService.user$);
+
+    if (!user) throw new Error('User not authenticated');
+
+    const taskRef = doc(this.firestore, `users/${user.uid}/tasks/${id}`);
+    return deleteDoc(taskRef);
   }
 
 }
