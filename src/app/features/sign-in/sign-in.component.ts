@@ -41,7 +41,6 @@ export class SignInComponent {
 
       this.router.navigate(['/tasks']);
     } catch (error) {
-      console.log({ error }); // TODO (dpardo): delete
       const { code } = error as FirebaseError;
       const errorMapper: Record<string, string> = {
         'auth/invalid-credential': 'Email not found',

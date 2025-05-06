@@ -40,7 +40,6 @@ export class SignUpComponent {
 
       this.router.navigate(['/tasks']);
     } catch (error) {
-      console.log({ error }); // TODO (dpardo): delete
       const { code } = error as FirebaseError;
       const errorMapper: Record<string, string> = {
         'auth/too-many-requests': 'Too many requests',

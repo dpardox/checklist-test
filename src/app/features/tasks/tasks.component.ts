@@ -3,6 +3,8 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TaskService } from '@core/services/task.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-tasks',
@@ -18,6 +20,10 @@ export class TasksComponent {
 
   private formBuilder = inject(FormBuilder);
 
+  private taskService = inject(TaskService);
+
+  private toastService = inject(ToastService);
+
   public taskForm = this.formBuilder.group({
     title: ['', [ Validators.required ]],
     description: [''],
@@ -25,14 +31,19 @@ export class TasksComponent {
 
   public user$ = this.authService.user$;
 
-  public submitTask() {
+  public async submitTask() {
     if (this.taskForm.invalid) return;
 
     const { title, description } = this.taskForm.value;
 
-    console.log({ title, description }); // TODO (dpardo): delete
-
-    this.taskForm.reset();
+    try {
+      await this.taskService.create(title!, description!);
+      this.toastService.show('Task created successfully!');
+      this.taskForm.reset();
+    } catch (_) {
+      this.toastService.show('Error creating task');
+      return;
+    }
   }
 
   public async signOut() {
