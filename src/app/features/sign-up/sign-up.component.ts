@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthLayout } from '@shared/layouts/auth/auth.layout';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -14,6 +14,7 @@ import { AuthService } from '@core/services/auth.service';
 })
 export class SignUpComponent {
 
+  private router = inject(Router);
   private formBuilder = inject(FormBuilder);
 
   private authService = inject(AuthService);
@@ -26,12 +27,14 @@ export class SignUpComponent {
     return this.signUpForm.get('email');
   }
 
-  public signUp() {
+  public async signUp() {
     if (this.signUpForm.invalid) return;
 
     const { email } = this.signUpForm.value;
 
-    this.authService.signUp(email!);
+    await this.authService.signUp(email!);
+
+    this.router.navigate(['/tasks']);
   }
 
 }

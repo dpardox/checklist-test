@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthLayout } from '@shared/layouts/auth/auth.layout';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '@core/services/auth.service';
 
 
 @Component({
@@ -13,6 +14,8 @@ import { CommonModule } from '@angular/common';
 })
 export class SignInComponent {
 
+  private router = inject(Router);
+  private authService = inject(AuthService);
   private formBuilder = inject(FormBuilder);
 
   public signInForm = this.formBuilder.group({
@@ -25,12 +28,14 @@ export class SignInComponent {
   }
 
 
-  public signIn() {
+  public async signIn() {
     if (this.signInForm.invalid) return;
 
     const { email } = this.signInForm.value;
 
-    console.log({ email }); // TODO (dpardo): delete
+    await this.authService.signIn(email!);
+
+    this.router.navigate(['/tasks']);
   }
 
 }
