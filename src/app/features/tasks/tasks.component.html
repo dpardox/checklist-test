@@ -1,88 +1,48 @@
-<div class="mx-auto max-w-5xl w-full px-4">
-  <header class="flex items-center justify-between py-10">
-    <div class="flex flex-col items-end">
-      <h2 class="text-gray-600 font-semibold text-2xl mb-1 leading-none">Checklist Test</h2>
-      <span class="text-xs leading-none">By dpardox</span>
-    </div>
-    <div class="flex flex-col items-end">
-      <div class="text-gray-500">{{ (user$ | async)?.email }}</div>
-      <a class="text-blue-500 cursor-pointer" (click)="signOut()">Sign out</a>
-    </div>
-  </header>
+<app-web>
+  <app-task-form [task]="task" />
 
-  <form [formGroup]="taskForm" (ngSubmit)="submitTask()">
-    <div class="flex items-start justify-between mb-4 gap-3">
-      <input type="text"
-        class="py-2 px-3 rounded-md bg-gray-50 placeholder-gray-400 outline-none block flex-1"
-        placeholder="Title"
-        formControlName="title">
-      <textarea rows="3"
-        class="py-2 px-3 rounded-md bg-gray-50 placeholder-gray-400 outline-none block flex-2"
-        placeholder="Description"
-        formControlName="description">
-      </textarea>
-      <button type="submit"
-        class="bg-indigo-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer">
-        {{ idControl?.value ? 'Update': 'New' }}
-      </button>
-    </div>
-  </form>
-
-  <div class="min-w-full shadow rounded-lg overflow-hidden">
+  <div class="min-w-full shadow rounded-lg overflow-hidden mb-10">
     <table class="min-w-full leading-normal">
       <thead>
         <tr>
           <th
             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-            Task
-          </th>
-          <th
-            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-            Created at
-          </th>
-          <th
-            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Tasks
           </th>
         </tr>
       </thead>
       <tbody>
         @for (task of tasks$ | async | taskSort; track task.id) {
-          <tr [ngClass]="{ 'bg-gray-50 line-through': task?.done }">
+          <tr [ngClass]="{ 'bg-gray-50 line-through opacity-50': task?.done }">
             <td class="px-5 py-5 border-b border-gray-200 text-sm">
-              <div class="flex items-center">
+              <div class="flex">
                 <input type="checkbox"
-                  class="flex-shrink-0 h-6 w-6"
+                  class="flex-shrink-0 h-6 w-6 mt-1"
                   value="true"
                   [checked]="task?.done"
                   (change)="toggleDone(task)">
                 <div class="ml-4">
                   <p class="text-gray-900 whitespace-no-wrap font-semibold">{{ task.title }}</p>
                   <p class="text-gray-500 whitespace-no-wrap">{{ task.description }}</p>
+                  <p class="text-gray-400 text-xs whitespace-no-wrap py-3">
+                    {{ task.createdAt.toDate() | date:'medium' }}
+                  </p>
+
+                  @if (!task?.done) {
+                    <div class="flex gap-3">
+                      <button
+                        class="bg-indigo-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer"
+                        (click)="editTask(task)">
+                        Edit
+                      </button>
+                      <button
+                        class="bg-red-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer"
+                        (click)="deleteTask(task.id!)">
+                        Remove
+                      </button>
+                    </div>
+                  }
                 </div>
-              </div>
-            </td>
-            <td class="px-5 py-5 border-b border-gray-200 text-sm">
-              <p class="text-gray-800 whitespace-no-wrap">
-                {{ task.createdAt.toDate() | date:'mediumDate' }}
-              </p>
-              <p class="text-gray-500 whitespace-no-wrap">
-                {{ task.createdAt.toDate() | date:'shortTime' }}
-              </p>
-            </td>
-            <td class="px-5 py-5 border-b border-gray-200 text-sm">
-              <div class="flex justify-end gap-3">
-                @if (!task?.done) {
-                  <button
-                    class="bg-indigo-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer"
-                    (click)="editTask(task)">
-                    Edit
-                  </button>
-                  <button
-                    class="bg-red-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer"
-                    (click)="deleteTask(task.id!)">
-                    Remove
-                  </button>
-                }
               </div>
             </td>
           </tr>
@@ -95,4 +55,4 @@
       </span>
     </div>
   </div>
-</div>
+</app-web>

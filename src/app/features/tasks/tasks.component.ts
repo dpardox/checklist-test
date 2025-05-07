@@ -1,68 +1,34 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '@core/services/auth.service';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, ElementRef, inject } from '@angular/core';
 import { TaskService } from '@core/services/task.service';
 import { ToastService } from '@core/services/toast.service';
 import { Task } from '@shared/interfaces/task.interface';
 import { TaskSortPipe } from './pipes/task-sort.pipe';
+import { WebLayout } from '@shared/layouts/web/web.layout';
+import { TaskFormComponent } from './components/task-form/task-form.component';
 
 @Component({
   selector: 'app-tasks',
-  imports: [CommonModule, ReactiveFormsModule, TaskSortPipe],
+  imports: [CommonModule, TaskSortPipe, WebLayout, TaskFormComponent],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css'
 })
 export class TasksComponent {
 
-  private authService = inject(AuthService);
-
-  private router = inject(Router);
-
-  private formBuilder = inject(FormBuilder);
-
   private toastService = inject(ToastService);
 
   private taskService = inject(TaskService);
 
-  public get idControl() {
-    return this.taskForm.get('id');
-  }
+  private elementRef = inject(ElementRef);
 
-  public taskForm = this.formBuilder.nonNullable.group({
-    id: [''],
-    title: ['', [ Validators.required ]],
-    description: [''],
-  });
-
-  public user$ = this.authService.user$;
+  public task!: Task;
 
   public tasks$ = this.taskService.getAll();
 
-  public async submitTask() {
-    if (this.taskForm.invalid) return;
-
-    const { id, title, description } = this.taskForm.value;
-
-    try {
-      if (id) {
-        await this.taskService.update(id, { title, description });
-        this.toastService.show('Task updated successfully!');
-      } else {
-        await this.taskService.create({ title, description });
-        this.toastService.show('Task created successfully!');
-      }
-      this.taskForm.reset();
-    } catch (_) {
-      this.toastService.show('Error creating task');
-      return;
-    }
-  }
-
   public editTask(task: Task) {
-    const { id, title, description } = task;
-    this.taskForm.patchValue({ id, title, description });
+    this.task = task;
+    const form = this.elementRef.nativeElement.querySelector('app-task-form');
+    form.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }
 
   public async deleteTask(id: string) {
@@ -82,11 +48,6 @@ export class TasksComponent {
     } catch (_) {
       this.toastService.show('Error updating task');
     }
-  }
-
-  public async signOut() {
-    await this.authService.signOut();
-    this.router.navigate(['/sign-in']);
   }
 
 }

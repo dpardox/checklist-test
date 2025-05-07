@@ -1,0 +1,10 @@
+<header class="flex items-center flex-col sm:flex-row sm:justify-between py-5">
+  <div class="flex flex-col items-end py-3">
+    <h2 class="text-gray-600 font-semibold text-2xl mb-1 leading-none">Checklist Test</h2>
+    <span class="text-xs leading-none">By dpardox</span>
+  </div>
+  <div class="flex sm:flex-col items-end gap-2 sm:gap-0 py-3">
+    <div class="text-gray-500">{{ (user$ | async)?.email }}</div>
+    <a class="text-blue-500 cursor-pointer" (click)="signOut()">Sign out</a>
+  </div>
+</header>

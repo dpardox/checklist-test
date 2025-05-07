@@ -36,7 +36,7 @@ export class SignUpComponent {
     const { email } = this.signUpForm.value;
 
     try {
-      await this.authService.signIn(email!);
+      await this.authService.signUp(email!);
 
       this.router.navigate(['/tasks']);
     } catch (error) {

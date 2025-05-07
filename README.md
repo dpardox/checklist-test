@@ -14,4 +14,4 @@ Once the server is running, open your browser and navigate to `http://localhost:
 
 ---
 
-* This project uses [Tailwind CSS](https://tailwindcss.com/) for utility-first styling.
+* This project uses [Tailwind CSS](https://tailwindcss.com/) for utility-first and mobile-first styling.
