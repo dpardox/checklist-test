@@ -5,4 +5,5 @@ export interface Task {
   title: string;
   description: string;
   createdAt: Timestamp;
+  done?: boolean;
 }

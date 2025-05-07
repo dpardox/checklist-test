@@ -29,7 +29,7 @@ export class TaskService {
       switchMap(user => {
         const tasksCollection = collection(this.firestore, `users/${user!.uid}/tasks`);
         return collectionData(tasksCollection, { idField: 'id' }) as Observable<Task[]>;
-      })
+      }),
     );
   }
 

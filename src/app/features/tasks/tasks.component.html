@@ -23,14 +23,10 @@
       </textarea>
       <button type="submit"
         class="bg-indigo-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer">
-        New
+        {{ idControl?.value ? 'Update': 'New' }}
       </button>
     </div>
   </form>
-
-  @for (task of tasks$ | async; track task) {
-    <pre>{{ task | json }}</pre>
-  }
 
   <div class="min-w-full shadow rounded-lg overflow-hidden">
     <table class="min-w-full leading-normal">
@@ -50,18 +46,22 @@
         </tr>
       </thead>
       <tbody>
-        @for (task of tasks$ | async; track task.id) {
-          <tr [class.line-through]="false">
-            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+        @for (task of tasks$ | async | taskSort; track task.id) {
+          <tr [ngClass]="{ 'bg-gray-50 line-through': task?.done }">
+            <td class="px-5 py-5 border-b border-gray-200 text-sm">
               <div class="flex items-center">
-                <input type="checkbox" class="flex-shrink-0 h-6 w-6" value="true" checked>
+                <input type="checkbox"
+                  class="flex-shrink-0 h-6 w-6"
+                  value="true"
+                  [checked]="task?.done"
+                  (change)="toggleDone(task)">
                 <div class="ml-4">
                   <p class="text-gray-900 whitespace-no-wrap font-semibold">{{ task.title }}</p>
                   <p class="text-gray-500 whitespace-no-wrap">{{ task.description }}</p>
                 </div>
               </div>
             </td>
-            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+            <td class="px-5 py-5 border-b border-gray-200 text-sm">
               <p class="text-gray-800 whitespace-no-wrap">
                 {{ task.createdAt.toDate() | date:'mediumDate' }}
               </p>
@@ -69,18 +69,20 @@
                 {{ task.createdAt.toDate() | date:'shortTime' }}
               </p>
             </td>
-            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+            <td class="px-5 py-5 border-b border-gray-200 text-sm">
               <div class="flex justify-end gap-3">
-                <button
-                  class="bg-indigo-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer"
-                  (click)="editTask(task)">
-                  Edit
-                </button>
-                <button
-                  class="bg-red-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer"
-                  (click)="deleteTask(task.id!)">
-                  Remove
-                </button>
+                @if (!task?.done) {
+                  <button
+                    class="bg-indigo-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer"
+                    (click)="editTask(task)">
+                    Edit
+                  </button>
+                  <button
+                    class="bg-red-500 px-4 py-2 rounded-md text-white tracking-wide cursor-pointer"
+                    (click)="deleteTask(task.id!)">
+                    Remove
+                  </button>
+                }
               </div>
             </td>
           </tr>
@@ -89,7 +91,7 @@
     </table>
     <div class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
       <span class="text-xs xs:text-sm text-gray-900">
-        Showing 50 Entries
+        Showing {{ (tasks$ | async)?.length }} entries
       </span>
     </div>
   </div>

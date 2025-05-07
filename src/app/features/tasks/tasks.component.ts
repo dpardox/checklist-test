@@ -6,10 +6,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TaskService } from '@core/services/task.service';
 import { ToastService } from '@core/services/toast.service';
 import { Task } from '@shared/interfaces/task.interface';
+import { TaskSortPipe } from './pipes/task-sort.pipe';
 
 @Component({
   selector: 'app-tasks',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TaskSortPipe],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css'
 })
@@ -24,6 +25,10 @@ export class TasksComponent {
   private toastService = inject(ToastService);
 
   private taskService = inject(TaskService);
+
+  public get idControl() {
+    return this.taskForm.get('id');
+  }
 
   public taskForm = this.formBuilder.nonNullable.group({
     id: [''],
@@ -66,6 +71,16 @@ export class TasksComponent {
       this.toastService.show('Task deleted successfully!');
     } catch (_) {
       this.toastService.show('Error deleting task');
+    }
+  }
+
+  public async toggleDone(task: Task) {
+    try {
+      const { id, done } = task;
+      await this.taskService.update(id!, { done: !done });
+      this.toastService.show('Task updated successfully!');
+    } catch (_) {
+      this.toastService.show('Error updating task');
     }
   }
 
